@@ -1,0 +1,33 @@
+# Dependencies
+node_modules/
+**/node_modules/
+.venv/
+**/.venv/
+.next/
+**/.next/
+__pycache__/
+**/__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Private / runtime data
+Data/storage/
+Data/detections/
+Data/chroma_db/
+Data/documents/
+Data/*.json
+
+# Large LLM weights
+**/LLAVA-1.5_7B.safetensors
+
+# Logs & temp files
+*.log
+*lint_output.txt
+*.bak
+
+# Environment / OS files
+.env
+.env.local
+.DS_Store
+Thumbs.db
