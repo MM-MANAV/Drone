@@ -287,7 +287,29 @@ export default function MissionDashboard() {
     }
 
     try {
-      const targetDeviceId = deviceId || selectedCameraId;
+      let targetDeviceId = deviceId || selectedCameraId;
+
+      // Attempt to find a preferred external/COM camera over integrated ones
+      if (!targetDeviceId) {
+        try {
+          const devices = await navigator.mediaDevices.enumerateDevices();
+          const videoDevices = devices.filter(d => d.kind === "videoinput");
+          
+          const externalCamera = videoDevices.find(d => {
+            const label = d.label.toLowerCase();
+            return label && !label.includes("integrated") && !label.includes("built-in") && !label.includes("facetime");
+          });
+
+          if (externalCamera) {
+            targetDeviceId = externalCamera.deviceId;
+          } else if (videoDevices.length > 0 && videoDevices[0].deviceId) {
+            targetDeviceId = videoDevices[0].deviceId;
+          }
+        } catch (e) {
+          console.warn("Could not pre-enumerate devices for preference checking", e);
+        }
+      }
+
       const constraintsList: MediaStreamConstraints[] = targetDeviceId
         ? [
             { video: { deviceId: { exact: targetDeviceId }, width: { ideal: 1280 }, height: { ideal: 720 } } },
